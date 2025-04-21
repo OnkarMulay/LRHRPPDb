@@ -25,7 +25,7 @@ human_LRs['Receptor'] = human_LRs['Receptor'].map(m2h)
 human_LRs = human_LRs.dropna(subset=["Ligand", "Receptor"])
 human_LRs['LRI'] = human_LRs['Ligand'] + ":" + human_LRs['Receptor']
 
-mouse_LR_between = pd.read_csv(resources_path + "Long_dist_LRs.csv")
+mouse_LR_between = pd.read_csv("https://drive.google.com/uc?export=download&id=1xtxUdRztQBXml38JZ4bP22td2O1uo_Vw")
 mouse_LR_between.rename(columns={"LIGAND_1": "Ligand", "RECEPTOR_1": "Receptor"}, inplace=True)
 human_LR_between = mouse_LR_between[["LRI", "Ligand", "Receptor", "DataBase", "is_hormone", "In_Plasma", "age", "Exosome", "Secretomics"]].copy()
 human_LR_between['Ligand'] = human_LR_between['Ligand'].map(m2h)
