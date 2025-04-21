@@ -4,6 +4,8 @@ from dash.dependencies import Input, Output
 import pandas as pd
 import sqlite3
 import re
+import requests
+
 
 # --- Load Data ---
 
@@ -36,14 +38,22 @@ pathways = pd.read_csv("https://drive.google.com/uc?export=download&id=1eTUZS32O
 pathways["Pathway"] = pathways["Pathway"].str.replace(r' - Mus musculus.*', '', regex=True)
 
 # Metabolites Database
-conn = sqlite3.connect(metabolite_db_path)
+url = "https://drive.google.com/uc?export=download&id=1rH9mEdVT31x-oDvORNMUrHKoVAi0svmw"
+db_path = "metabolite_db.sqlite"
+with requests.get(url, stream=True) as r:
+    r.raise_for_status()
+    with open(db_path, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=8192):
+            f.write(chunk)
+conn = sqlite3.connect(db_path)
+
 query = "SELECT name FROM sqlite_master WHERE type='table';"
 tables = pd.read_sql_query(query, conn)
 dataframes = {}
 for table in tables['name']:
     dataframes[table] = pd.read_sql_query(f"SELECT * FROM {table};", conn)
 conn.close()
-metabolite_gene_pathway = pd.read_csv(resources_path + "metabolite_gene_pathway.csv")
+metabolite_gene_pathway = pd.read_csv("https://drive.google.com/uc?export=download&id=1nTZoK9tHV5OS0V3bi-Jr8tMKAAuWpSQs")
 metabolite_gene_pathway.drop(columns="pathway", inplace=True)
 metabolite_gene_pathway.rename(columns={"description": "pathway", "HMDB_ID": "hmdb"}, inplace=True)
 
